@@ -7,28 +7,28 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 
 # استبدل TOKEN الخاص بك هنا
 TOKEN = '7717963055:AAF8gjrpEKd2JykFPzBalSP4pbl3WV9o5hI'
-# استبدل CHAT_ID بالقناة أو المجموعة التي تريد إعادة توجيه الرسائل إليها
-TARGET_CHAT_ID = '@gkdt96'
 
 def start(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text('مرحبًا! سأقوم بإعادة توجيه الرسائل.')
+    """إرسال رسالة ترحيبية عند بدء البوت."""
+    update.message.reply_text('مرحبًا! أنا بوت. أرسل لي أي رسالة وسأرد عليك بكلمة "hello".')
 
-def forward_message(update: Update, context: CallbackContext) -> None:
-    # إعادة توجيه الرسالة إلى القناة أو المجموعة المستهدفة
-    context.bot.send_message(chat_id=TARGET_CHAT_ID, text=update.message.text)
+def reply_hello(update: Update, context: CallbackContext) -> None:
+    """الرد بكلمة 'hello' على أي رسالة."""
+    update.message.reply_text('hello')
 
 def main() -> None:
+    """تشغيل البوت."""
     # إنشاء البوت
     updater = Updater(TOKEN)
 
     # الحصول على الموزع
     dispatcher = updater.dispatcher
 
-    # إضافة معالج للأوامر
+    # إضافة معالج للأمر /start
     dispatcher.add_handler(CommandHandler("start", start))
 
-    # إضافة معالج للرسائل
-    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, forward_message))
+    # إضافة معالج للرسائل النصية
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, reply_hello))
 
     # بدء تشغيل البوت
     updater.start_polling()

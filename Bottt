@@ -1,0 +1,40 @@
+import logging
+from telegram import Update
+from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+
+# إعداد تسجيل الأخطاء
+logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+
+# استبدل TOKEN الخاص بك هنا
+TOKEN = '7717963055:AAF8gjrpEKd2JykFPzBalSP4pbl3WV9o5hI'
+# استبدل CHAT_ID بالقناة أو المجموعة التي تريد إعادة توجيه الرسائل إليها
+TARGET_CHAT_ID = '@gkdt96'
+
+def start(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text('مرحبًا! سأقوم بإعادة توجيه الرسائل.')
+
+def forward_message(update: Update, context: CallbackContext) -> None:
+    # إعادة توجيه الرسالة إلى القناة أو المجموعة المستهدفة
+    context.bot.send_message(chat_id=TARGET_CHAT_ID, text=update.message.text)
+
+def main() -> None:
+    # إنشاء البوت
+    updater = Updater(TOKEN)
+
+    # الحصول على الموزع
+    dispatcher = updater.dispatcher
+
+    # إضافة معالج للأوامر
+    dispatcher.add_handler(CommandHandler("start", start))
+
+    # إضافة معالج للرسائل
+    dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, forward_message))
+
+    # بدء تشغيل البوت
+    updater.start_polling()
+
+    # الانتظار حتى يتم إيقاف البوت
+    updater.idle()
+
+if __name__ == '__main__':
+    main()
